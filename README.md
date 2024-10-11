@@ -39,4 +39,4 @@ For the target string `"YOUR STRING"`, the algorithm will start with a randomly 
 - **`generateNeighbor`**: This function creates a neighboring string by modifying a random character in the current string.
 
 - **`fitness`**: This function calculates the fitness score by counting the number of matching characters between the current string and the target.
-- - **`randomString`**: This function generates initial value that we use in current variable.
+-  **`randomString`**: This function generates initial value that we use in current variable.
