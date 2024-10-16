@@ -1,73 +1,66 @@
-import Constants.chars
+import Constants.CHARS
+import Constants.TIMES
 import kotlin.random.Random
 
-fun main() {
-    // Set the target string that the algorithm will try to match
-    val target = "YOUR STRING"
+class SimpleHillClimbingAlgorithm {
 
-    // Generate a random initial string of the same length as the target
-    var current = randomString(target)
+    // Run the hill-climbing algorithm to evolve a string toward the target.
+    fun run(target: String) {
+        // Initialize the current string with a randomly generated one.
+        var current = randomString(target)
 
-    // Set the maximum number of iterations for the Hill Climbing algorithm
-    val maxIterations = 1000
+        // Iterate a fixed number of times (controlled by TIMES constant).
+        for (i in 0..TIMES) {
+            // Calculate the fitness of the current string (number of matching characters).
+            val bestFitness = fitness(target, current)
+            // Generate a neighbor string by modifying one character from the current string.
+            val newNeighbor = generateNeighbor(current)
+            // Calculate the fitness of the new neighbor string.
+            val newFitness = fitness(target, newNeighbor)
 
-    // Run the Hill Climbing algorithm to optimize the current string toward the target
-    runHillClimbingAlgorithm(maxIterations, target, current)
-}
+            // If the neighbor's fitness is better, replace the current string with the neighbor.
+            if (newFitness > bestFitness) {
+                current = newNeighbor
 
-private fun runHillClimbingAlgorithm(maxIterations: Int, target: String, current: String) {
-    var current1 = current
-    // Iterate through the algorithm for a maximum of maxIterations
-    for (i in 0..maxIterations) {
-        // Calculate the fitness of the current string
-        val bestFitness = fitness(target, current1)
-
-        // Generate a neighboring string by modifying one character of the current string
-        val newNeighbor = generateNeighbor(current1)
-
-        // Calculate the fitness of the neighboring string
-        val newFitness = fitness(target, newNeighbor)
-
-        // If the new neighbor has a better fitness score, update the current string
-        if (newFitness > bestFitness) {
-            current1 = newNeighbor
-
-            // If the current string matches the target, stop the algorithm
-            if (current1 == target) {
-                println("Target string has been found on iteration $i.! Current string --> $current1, Target: $target")
-                break
-            } else {
-                // Otherwise, print the updated fitness information
-                println("Upgraded fitness has been found on iteration $i.! Current string --> $current1, Target: $target")
+                // If the new string matches the target, print a success message and break the loop.
+                if (current == target) {
+                    println("Target string has been found on iteration $i! Current string --> $current, Target: $target")
+                    break
+                } else {
+                    // Otherwise, print the updated fitness and the current string.
+                    println("Upgraded fitness has been found on iteration $i! Current string --> $current, Target: $target")
+                }
             }
         }
     }
+
+    // Generate a neighboring string by changing a random character in the current string.
+    private fun generateNeighbor(current: String): String {
+        // Convert the current string to a char array for modification.
+        val charArray = current.toCharArray()
+
+        // Select a random index in the string to change.
+        val randomIndex = Random.nextInt(from = 0, until = current.length)
+
+        // Select a random character from the list of available characters (CHARS).
+        val newChar = Random.nextInt(from = 0, until = CHARS.length)
+
+        // Replace the character at the random index with a new random character.
+        charArray[randomIndex] = CHARS[newChar]
+
+        // Join the char array back into a string and return it.
+        return charArray.joinToString("")
+    }
+
+    // Calculate the fitness of a string, which is the number of characters that match the target string.
+    private fun fitness(target: String, current: String): Int {
+        var match = 0
+        // Compare each character in the target and current strings and count the matches.
+        target.forEachIndexed { index, char -> if (current[index] == char) match++ }
+        return match
+    }
+
+    // Generate a random string of the same length as the target string using random characters from CHARS.
+    private fun randomString(target: String) =
+        target.map { CHARS.random() }.joinToString("")
 }
-
-private fun generateNeighbor(current: String): String {
-    // Convert the current string to a char array for modification
-    val charArray = current.toCharArray()
-
-    // Select a random index in the string to change
-    val randomIndex = Random.nextInt(from = 0, until = current.length)
-
-    // Select a random character from the list of available characters
-    val newChar = Random.nextInt(from = 0, until = chars.length)
-
-    // Replace the character at the random index with a new character
-    charArray[randomIndex] = chars[newChar]
-
-    // Join the char array back into a string and return it
-    return charArray.joinToString("")
-}
-
-private fun fitness(target: String, current: String): Int {
-    var match = 0
-    // Compare each character in the target and current strings and count matches
-    target.forEachIndexed { index, char -> if (current[index] == char) match++ }
-    return match
-}
-
-private fun randomString(target: String) =
-    // Generate a random string of the same length as the target, using random characters
-    target.map { chars.random() }.joinToString("")
